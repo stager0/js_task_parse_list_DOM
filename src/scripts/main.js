@@ -2,11 +2,14 @@
 
 // write code here
 function convertSalary(salaryStr) {
-  return Number(salaryStr.match(/\d/g).join(''));
+  const salary = String(salaryStr).replace(/\D/g, '');
+
+  return Number(salary) || 0;
 }
 
-function sortList(employeesList) {
+function sortList(listElement) {
   const employeeArr = [];
+  const employeesList = listElement.children;
 
   for (const employee of employeesList) {
     const userSalary = employee.dataset.salary;
@@ -29,24 +32,28 @@ function sortList(employeesList) {
   };
 
   const sortedArr = arrSortedEmployees();
-  const parentObj = sortedArr[0].parentElement;
 
-  parentObj.innerHTML = '';
+  if (sortedArr[0].parentElement) {
+    const parentObj = sortedArr[0].parentElement;
 
-  for (const employeeHtml of arrSortedEmployees()) {
-    parentObj.appendChild(employeeHtml);
+    parentObj.innerHTML = '';
+
+    for (const employeeHtml of arrSortedEmployees()) {
+      parentObj.appendChild(employeeHtml);
+    }
   }
 }
 
-function getEmployees(employeesList) {
+function getEmployees(listElement) {
   const parsedEmployeeArr = [];
+  const employeesList = listElement.children;
 
   for (const employee of employeesList) {
     const objToAdd = {};
 
     objToAdd['name'] = employee.textContent;
     objToAdd['position'] = employee.dataset.position;
-    objToAdd['salary'] = employee.dataset.salary;
+    objToAdd['salary'] = convertSalary(employee.dataset.salary);
     objToAdd['age'] = employee.dataset.age;
 
     parsedEmployeeArr.push(objToAdd);
@@ -55,10 +62,10 @@ function getEmployees(employeesList) {
   return parsedEmployeeArr;
 }
 
-const employeeList = document.querySelectorAll('li');
+const employeeList = document.querySelector('ul');
 
 sortList(employeeList);
 
-const sortedEmployeeList = document.querySelectorAll('li');
+const sortedEmployeeList = document.querySelector('ul');
 
 getEmployees(sortedEmployeeList);
